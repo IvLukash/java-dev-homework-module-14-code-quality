@@ -23,16 +23,16 @@ public class App {
         log.info("Hi. Welcome to the game. Enjoy!");
 
         while (true) {
-            printBoard(board);
+            printBoard(board); // Show the current state of the game board
 
             if (!isBoardEmpty) {
-                prepareBoard(board);
+                prepareBoard(board); // Prepare the game board for play
                 isBoardEmpty = true;
             }
 
             log.info("Your move!");
-            userMove(scanner, board);
-            botMove(board, random);
+            userMove(scanner, board); // User move
+            botMove(board, random); // Computer move
 
             winner = checkGameWinner(board);
 
@@ -91,7 +91,7 @@ public class App {
         }
     }
 
-    private static byte checkGameWinner(char[] board) {
+    private static byte checkGameWinner(char[] board) { // Check the winning combinations
         int[][] winCombinations = {
                 {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
                 {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
@@ -111,7 +111,7 @@ public class App {
         return 0;
     }
 
-    private static boolean hasEmptyCells(char[] board) {
+    private static boolean hasEmptyCells(char[] board) { // Verify if the next move is possible
         for (char cell : board) {
             if (cell != USER_MARK && cell != BOT_MARK) {
                 return true;
