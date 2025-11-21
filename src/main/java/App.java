@@ -49,11 +49,11 @@ public class App {
     }
 
     private static void printBoard(char[] board) {
-        System.out.println("\n " + board[0] + " | " + board[1] + " | " + board[2] + " ");
+        System.out.printf("%n %c | %c | %c%n", board[0], board[1], board[2]);
         System.out.println("-----------");
-        System.out.println(" " + board[3] + " | " + board[4] + " | " + board[5] + " ");
+        System.out.printf(" %c | %c | %c%n", board[3], board[4], board[5]);
         System.out.println("-----------");
-        System.out.println(" " + board[6] + " | " + board[7] + " | " + board[8] + " \n");
+        System.out.printf(" %c | %c | %c%n%n", board[6], board[7], board[8]);
     }
 
     private static void prepareBoard(char[] array) {
@@ -125,7 +125,7 @@ public class App {
             case 1 -> log.info("You won the game!\nCreated by Shreyas Saha. Thanks for playing!");
             case 2 -> log.info("You lost the game!\nCreated by Shreyas Saha. Thanks for playing!");
             case 3 -> log.info("It's a draw!\nCreated by Shreyas Saha. Thanks for playing!");
-            default -> throw new RuntimeException("Сталася помилка");
+            default -> throw new RuntimeException("Something wrong!");
         }
     }
 }
