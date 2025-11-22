@@ -1,51 +1,43 @@
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
 public class App {
-
-    private static final Logger log = LoggerFactory.getLogger(App.class);
     private static final int BOARD_SIZE = 9;
     private static final char EMPTY_CELL = ' ';
-    public static final char USER_MARK = 'X';
-    public static final char BOT_MARK = 'O';
+    private static final char USER_MARK = 'X';
+    private static final char BOT_MARK = 'O';
+    private static final Random RANDOM = new Random();
+    private static final char[] START_BOARD = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
-        boolean isBoardEmpty = false;
-        int winner;
-        char[] board = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-        log.info("Hi. Welcome to the game. Enjoy!");
 
-        while (true) {
+        int winner = 0;
+        char[] board = prepareBoard();
+        System.out.println("Hi. Welcome to the game.");
+        System.out.println("You have next game board with possible moves!");
+        printBoard(START_BOARD);
+        System.out.println("Let's start the game! Enjoy!");
+
+        while (winner == 0) {
             printBoard(board); // Show the current state of the game board
 
-            if (!isBoardEmpty) {
-                prepareBoard(board); // Prepare the game board for play
-                isBoardEmpty = true;
-            }
-
-            log.info("Your move!");
+            System.out.println("Your move!");
             userMove(scanner, board); // User move
-            botMove(board, random); // Computer move
 
             winner = checkGameWinner(board);
-
-            if (!hasEmptyCells(board)) {
-                winner = 3;
-            }
-
             if (winner != 0) {
-                printResult(winner);
                 break;
             }
+
+            botMove(board); // Computer move
+
+            winner = checkGameWinner(board);
         }
         scanner.close();
+        printResult(winner);
     }
 
     private static void printBoard(char[] board) {
@@ -56,8 +48,10 @@ public class App {
         System.out.printf(" %c | %c | %c%n%n", board[6], board[7], board[8]);
     }
 
-    private static void prepareBoard(char[] array) {
-        Arrays.fill(array, EMPTY_CELL);
+    private static char[] prepareBoard() {
+        char[] board = new char[BOARD_SIZE];
+        Arrays.fill(board, ' ');
+        return board;
     }
 
     private static void userMove(Scanner scanner, char[] board) {
@@ -66,24 +60,24 @@ public class App {
                 int move = scanner.nextInt();
                 if (move > 0 && move <= BOARD_SIZE) {
                     if (board[move - 1] == USER_MARK || board[move - 1] == BOT_MARK)
-                        log.info("That one is already in use. Enter another!");
+                        System.out.println("That one is already in use. Enter another!");
                     else {
                         board[move - 1] = USER_MARK;
                         break;
                     }
                 } else {
-                    log.warn("Invalid input. Enter again!");
+                    System.out.println("Invalid input. Enter again!");
                 }
             } catch (InputMismatchException _) {
-                log.warn("Should be numbers from 1 to " + BOARD_SIZE + "!");
+                System.out.println("Should be numbers from 1 to " + BOARD_SIZE + "!");
                 scanner.nextLine();
             }
         }
     }
 
-    private static void botMove(char[] board, Random random) {
+    private static void botMove(char[] board) {
         while (true) {
-            int move = random.nextInt(9) + 1;
+            int move = RANDOM.nextInt(9) + 1;
             if (board[move - 1] != USER_MARK && board[move - 1] != BOT_MARK) {
                 board[move - 1] = 'O';
                 break;
@@ -91,7 +85,7 @@ public class App {
         }
     }
 
-    private static byte checkGameWinner(char[] board) { // Check the winning combinations
+    private static int checkGameWinner(char[] board) { // Check the winning combinations
         int[][] winCombinations = {
                 {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
                 {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
@@ -103,28 +97,30 @@ public class App {
             char b = board[combination[1]];
             char c = board[combination[2]];
 
-            if (a == b && b == c) {
-                if (a == 'X') return 1;
-                if (a == 'O') return 2;
+            if (a == b && b == c && a != EMPTY_CELL) {
+                if (a == USER_MARK) return 1;
+                if (a == BOT_MARK) return 2;
             }
+        }
+
+        boolean hasEmptyCells = false;
+        for (char cell : board) {
+            if (cell != USER_MARK && cell != BOT_MARK) {
+                hasEmptyCells = true;
+                break;
+            }
+        }
+        if (!hasEmptyCells) {
+            return 3;
         }
         return 0;
     }
 
-    private static boolean hasEmptyCells(char[] board) { // Verify if the next move is possible
-        for (char cell : board) {
-            if (cell != USER_MARK && cell != BOT_MARK) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static void printResult(int winner) {
         switch (winner) {
-            case 1 -> log.info("You won the game!\nCreated by Shreyas Saha. Thanks for playing!");
-            case 2 -> log.info("You lost the game!\nCreated by Shreyas Saha. Thanks for playing!");
-            case 3 -> log.info("It's a draw!\nCreated by Shreyas Saha. Thanks for playing!");
+            case 1 -> System.out.println("You won the game!\nCreated by Shreyas Saha. Thanks for playing!");
+            case 2 -> System.out.println("You lost the game!\nCreated by Shreyas Saha. Thanks for playing!");
+            case 3 -> System.out.println("It's a draw!\nCreated by Shreyas Saha. Thanks for playing!");
             default -> throw new RuntimeException("Something wrong!");
         }
     }
