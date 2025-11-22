@@ -79,7 +79,7 @@ public class App {
         while (true) {
             int move = RANDOM.nextInt(9) + 1;
             if (board[move - 1] != USER_MARK && board[move - 1] != BOT_MARK) {
-                board[move - 1] = 'O';
+                board[move - 1] = BOT_MARK;
                 break;
             }
         }
